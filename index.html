@@ -49,9 +49,11 @@
         
         .options {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            flex-wrap: wrap;
             margin-top: 15px;
-            gap: 10px;
+            gap: 8px;
+            padding: 0 5px;
         }
         
         .radio-button {
@@ -59,7 +61,7 @@
         }
         
         .radio-label {
-            padding: 10px 18px;
+            padding: 12px 0;
             background-color: #fff5f5;
             border: 2px solid #ffd1d1;
             border-radius: 10px;
@@ -67,7 +69,74 @@
             transition: all 0.3s ease;
             font-weight: 500;
             text-align: center;
-            min-width: 40px;
+            min-width: 45px;
+            flex: 1;
+            max-width: 60px;
+            font-size: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .question {
+                margin: 15px 0;
+                padding: 15px;
+            }
+
+            .question p {
+                font-size: 15px;
+                line-height: 1.4;
+                margin-bottom: 10px;
+            }
+
+            .radio-label {
+                padding: 10px 0;
+                font-size: 15px;
+                min-width: 40px;
+            }
+
+            .score-explanation {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            .score-explanation p {
+                margin: 5px 0;
+            }
+
+            #resultButton {
+                width: 90%;
+                max-width: 280px;
+                font-size: 16px;
+                padding: 12px 20px;
+            }
+
+            #typeResult {
+                font-size: 24px;
+            }
+
+            #typeDescription p {
+                font-size: 14px;
+            }
+
+            .share-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .share-button {
+                width: 90%;
+                max-width: 280px;
+                font-size: 14px;
+            }
         }
         
         .radio-label:hover {
@@ -225,6 +294,22 @@
             <!-- 質問は JavaScript で動的に生成されます -->
         </div>
 
+        <div id="adContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 1000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                <!-- Google AdSenseの広告コード -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="YOUR-CLIENT-ID"
+                     data-ad-slot="YOUR-AD-SLOT"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                <p style="margin-top: 20px; color: #666;">広告は5秒後に自動的に閉じます...</p>
+            </div>
+        </div>
+
         <button id="resultButton" disabled>診断結果を見る</button>
 
         <div id="result">
@@ -353,13 +438,28 @@
         // テストのURL（公開時に実際のURLに書き換えてください）
         const TEST_URL = 'https://hana3687.github.io/love-type-test/';
 
-        function shareOnX() {
-            const result = document.getElementById('typeResult').textContent;
-            const score = document.getElementById('scoreResult').textContent;
-            const text = `私の恋愛タイプは${result}でした！\n${score}\n\n恋愛タイプ診断テストを試してみてね！\n`;
-            const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(TEST_URL)}`;
-            window.open(shareUrl, '_blank', 'width=600,height=400');
+            // 結果を表示
+            let result;
+            for (const type in results) {
+                const [min, max] = results[type].range;
+                if (totalScore >= min && totalScore <= max) {
+                    result = results[type];
+                    break;
+                }
+            }
+
+            document.getElementById('typeResult').textContent = result.title;
+            document.getElementById('scoreResult').textContent = `合計点: ${totalScore}点`;
+            document.getElementById('typeDescription').innerHTML = 
+                result.description.map(desc => `<p>・${desc}</p>`).join('');
+            
+            document.getElementById('result').style.display = 'block';
+            resultButton.style.display = 'none';
+            questionsContainer.style.display = 'none';
         }
+
+        // 診断結果ボタンのイベントリスナーを更新
+        resultButton.addEventListener('click', showResultWithAd);
 
         function shareOnLINE() {
             const result = document.getElementById('typeResult').textContent;
