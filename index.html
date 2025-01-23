@@ -317,10 +317,12 @@
             <h3 id="typeResult"></h3>
             <p id="scoreResult"></p>
             <div id="typeDescription"></div>
-            <div class="compatibility">
-                <h4>相性の良いタイプ：</h4>
-                <p>・大人の恋愛タイプ ⇔ 情熱派恋愛タイプ</p>
-                <p>・慎重派恋愛タイプ ⇔ ロマンチック恋愛タイプ</p>
+            <div class="result-content">
+                <h2>あなたの恋愛タイプは...</h2>
+                <h3 id="typeResult"></h3>
+                <p id="scoreResult"></p>
+                <div id="typeDescription"></div>
+                <div id="compatibility" class="compatibility"></div>
             </div>
             <div class="share-buttons">
                 <button onclick="shareOnX()" class="share-button x-button">
@@ -438,7 +440,24 @@
         // テストのURL（公開時に実際のURLに書き換えてください）
         const TEST_URL = 'https://hana3687.github.io/love-type-test/';
 
-            // 結果を表示
+        function getBestMatch(type) {
+            const matches = {
+                '大人の恋愛タイプ': '情熱派恋愛タイプ',
+                '情熱派恋愛タイプ': '大人の恋愛タイプ',
+                '慎重派恋愛タイプ': 'ロマンチック恋愛タイプ',
+                'ロマンチック恋愛タイプ': '慎重派恋愛タイプ'
+            };
+            return matches[type] || '情報なし';
+        }
+
+        // 診断結果ボタンのイベントリスナー
+        resultButton.addEventListener('click', () => {
+            const scores = Array.from({ length: questions.length }, (_, i) => 
+                parseInt(document.querySelector(`input[name="q${i}"]:checked`).value)
+            );
+            
+            const totalScore = scores.reduce((sum, score) => sum + score, 0);
+            
             let result;
             for (const type in results) {
                 const [min, max] = results[type].range;
@@ -453,13 +472,17 @@
             document.getElementById('typeDescription').innerHTML = 
                 result.description.map(desc => `<p>・${desc}</p>`).join('');
             
+            // 相性の良いタイプを計算して表示
+            const bestMatch = getBestMatch(result.title.replace(/『|』/g, ''));
+            document.getElementById('compatibility').innerHTML = `
+                <h4>相性の良いタイプ</h4>
+                <p>『${bestMatch}』</p>
+            `;
+            
             document.getElementById('result').style.display = 'block';
             resultButton.style.display = 'none';
             questionsContainer.style.display = 'none';
-        }
-
-        // 診断結果ボタンのイベントリスナーを更新
-        resultButton.addEventListener('click', showResultWithAd);
+        });
 
         function shareOnLINE() {
             const result = document.getElementById('typeResult').textContent;
