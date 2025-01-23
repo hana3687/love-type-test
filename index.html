@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋愛タイプ診断テスト</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fef6f6;
+            color: #4a4a4a;
+            line-height: 1.6;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ff6b8b;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(255, 107, 139, 0.1);
+        }
+        
+        .question {
+            margin: 25px 0;
+            padding: 20px;
+            border: 2px solid #ffdbdb;
+            border-radius: 15px;
+            background-color: #fff;
+        }
+        
+        .question p {
+            color: #ff6b8b;
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        
+        .radio-button {
+            display: none;
+        }
+        
+        .radio-label {
+            padding: 10px 18px;
+            background-color: #fff5f5;
+            border: 2px solid #ffd1d1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+            min-width: 40px;
+        }
+        
+        .radio-label:hover {
+            background-color: #ffe8e8;
+            transform: translateY(-2px);
+        }
+        
+        .radio-button:checked + .radio-label {
+            background-color: #ff6b8b;
+            border-color: #ff6b8b;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 107, 139, 0.2);
+        }
+        
+        #resultButton {
+            display: block;
+            width: 300px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b8b, #ffa7bd);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 139, 0.2);
+        }
+        
+        #resultButton:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 139, 0.3);
+        }
+        
+        #resultButton:disabled {
+            background: #ffd1d1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        #result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background-color: #fff9f9;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
+        }
+        
+        #result h2 {
+            color: #ff6b8b;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        #typeResult {
+            color: #ff4674;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(255, 107, 139, 0.1);
+        }
+        
+        .score-explanation {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #fff9f9;
+            border-radius: 15px;
+            border: 2px solid #ffdbdb;
+        }
+        
+        .score-explanation p {
+            margin: 8px 0;
+            color: #ff6b8b;
+        }
+        
+        .compatibility {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff5f5;
+            border-radius: 15px;
+        }
+        
+        .compatibility h4 {
+            color: #ff6b8b;
+            margin-bottom: 15px;
+        }
+        
+        #typeDescription p {
+            color: #666;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .share-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        
+        .share-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .share-button img {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .x-button {
+            background-color: #000000;
+        }
+        
+        .line-button {
+            background-color: #00B900;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>恋愛タイプ診断テスト</h1>
+        
+        <div class="score-explanation">
+            <p>各質問に対して0-4点で回答してください：</p>
+            <p>4点：とても当てはまる</p>
+            <p>3点：当てはまる</p>
+            <p>2点：どちらとも言えない</p>
+            <p>1点：あまり当てはまらない</p>
+            <p>0点：全く当てはまらない</p>
+        </div>
+
+        <div id="questions">
+            <!-- 質問は JavaScript で動的に生成されます -->
+        </div>
+
+        <button id="resultButton" disabled>診断結果を見る</button>
+
+        <div id="result">
+            <h2>あなたの恋愛タイプは...</h2>
+            <h3 id="typeResult"></h3>
+            <p id="scoreResult"></p>
+            <div id="typeDescription"></div>
+            <div class="compatibility">
+                <h4>相性の良いタイプ：</h4>
+                <p>・大人の恋愛タイプ ⇔ 情熱派恋愛タイプ</p>
+                <p>・慎重派恋愛タイプ ⇔ ロマンチック恋愛タイプ</p>
+            </div>
+            <div class="share-buttons">
+                <button onclick="shareOnX()" class="share-button x-button">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/X_logo_2023_%28white%29.png" alt="X logo">
+                    Xで共有する
+                </button>
+                <button onclick="shareOnLINE()" class="share-button line-button">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="LINE logo">
+                    LINEで共有する
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            "相手の気持ちを考えすぎてしまう",
+            "デートは綿密に計画を立てる",
+            "相手の連絡を待つのが苦手",
+            "思ったことはすぐに伝えたい",
+            "二人の思い出を大切にする",
+            "相手の話をじっくり聞ける",
+            "よく友達に恋バナを話す",
+            "相手の変化にすぐ気付く",
+            "SNSをよくチェックする",
+            "甘えるのが得意である",
+            "相手の趣味に興味がある",
+            "恋愛は慎重に進めたい",
+            "人前でイチャイチャできる",
+            "恋愛は情熱的に楽しみたい",
+            "結婚を視野に入れて付き合う",
+            "相手との時間を大切にする",
+            "嫉妬深い方だと思う",
+            "恋愛は駆け引きが大事",
+            "直感で判断することが多い",
+            "束縛は嫌いな方である"
+        ];
+
+        const results = {
+            type1: {
+                range: [0, 20],
+                title: "『大人の恋愛タイプ』",
+                description: [
+                    "冷静に恋愛を楽しめる",
+                    "相手の自由を尊重できる",
+                    "理性的な判断ができる",
+                    "時には感情表現を増やすと◎"
+                ]
+            },
+            type2: {
+                range: [21, 40],
+                title: "『慎重派恋愛タイプ』",
+                description: [
+                    "着実に関係を築ける",
+                    "相手への思いやりが強い",
+                    "安定した恋愛を好む",
+                    "もう少し自然体でも大丈夫"
+                ]
+            },
+            type3: {
+                range: [41, 60],
+                title: "『情熱派恋愛タイプ』",
+                description: [
+                    "感情表現が豊か",
+                    "恋愛を全力で楽しめる",
+                    "相手を大切にできる",
+                    "少し冷静さを持つと◎"
+                ]
+            },
+            type4: {
+                range: [61, 80],
+                title: "『ロマンチック恋愛タイプ』",
+                description: [
+                    "恋愛を理想的に追求",
+                    "相手への愛情表現が上手",
+                    "甘い雰囲気を作れる",
+                    "現実との折り合いを意識すると◎"
+                ]
+            }
+        };
+
+        // 質問を動的に生成
+        const questionsContainer = document.getElementById('questions');
+        questions.forEach((question, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `
+                <p>${index + 1}. ${question}</p>
+                <div class="options">
+                    ${[0, 1, 2, 3, 4].map(value => `
+                        <div>
+                            <input type="radio" id="q${index}_${value}" name="q${index}" value="${value}" class="radio-button">
+                            <label for="q${index}_${value}" class="radio-label">${value}</label>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            questionsContainer.appendChild(questionDiv);
+        });
+
+        // ラジオボタンの選択状態を監視
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        const resultButton = document.getElementById('resultButton');
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', checkAllAnswered);
+        });
+
+        function checkAllAnswered() {
+            const allQuestions = questions.length;
+            const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+            resultButton.disabled = answeredQuestions !== allQuestions;
+        }
+
+        // テストのURL（公開時に実際のURLに書き換えてください）
+        const TEST_URL = 'https://あなたのページのURL';
+
+        function shareOnX() {
+            const result = document.getElementById('typeResult').textContent;
+            const score = document.getElementById('scoreResult').textContent;
+            const text = `私の恋愛タイプは${result}でした！\n${score}\n\n恋愛タイプ診断テストを試してみてね！\n`;
+            const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(TEST_URL)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+
+        function shareOnLINE() {
+            const result = document.getElementById('typeResult').textContent;
+            const score = document.getElementById('scoreResult').textContent;
+            const text = `私の恋愛タイプは${result}でした！\n${score}\n\n恋愛タイプ診断テストを試してみてね！`;
+            const shareUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text + '\n' + TEST_URL)}`;
+            window.location.href = shareUrl;
+        }
+
+        // 診断結果の計算と表示
+        resultButton.addEventListener('click', () => {
+            const scores = Array.from({ length: questions.length }, (_, i) => 
+                parseInt(document.querySelector(`input[name="q${i}"]:checked`).value)
+            );
+            
+            const totalScore = scores.reduce((sum, score) => sum + score, 0);
+            
+            let result;
+            for (const type in results) {
+                const [min, max] = results[type].range;
+                if (totalScore >= min && totalScore <= max) {
+                    result = results[type];
+                    break;
+                }
+            }
+
+            document.getElementById('typeResult').textContent = result.title;
+            document.getElementById('scoreResult').textContent = `合計点: ${totalScore}点`;
+            document.getElementById('typeDescription').innerHTML = 
+                result.description.map(desc => `<p>・${desc}</p>`).join('');
+            
+            document.getElementById('result').style.display = 'block';
+            resultButton.style.display = 'none';
+            questionsContainer.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
